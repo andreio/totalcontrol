@@ -1,0 +1,9 @@
+#root {
+  flex: 1;
+  justify-content: center;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
