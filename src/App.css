@@ -1,9 +1,16 @@
 #root {
   flex: 1;
   justify-content: center;
+  min-width: 1280px;
 }
 
 body {
   display: flex;
   justify-content: center;
+  flex: 1;
+}
+
+html {
+  display: flex;
+  height: 100%;
 }

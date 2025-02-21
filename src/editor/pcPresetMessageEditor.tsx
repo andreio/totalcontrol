@@ -10,7 +10,7 @@ export const PCPresetMessageEditor = () => {
       </div>
       <div className="flex flex-row items-center gap-3">
         <span>Send to all channels:</span>
-        <Switch />
+        <Switch className="bg-slate-900" />
       </div>
       <div className="flex flex-row gap-3 items-center">
         <span>MIDI Channel:</span>

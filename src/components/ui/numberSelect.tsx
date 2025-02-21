@@ -11,7 +11,7 @@ export const NumberSelect = (
   props: SelectPrimitive.SelectProps & { min: number; max: number }
 ) => (
   <Select {...props}>
-    <SelectTrigger>
+    <SelectTrigger className="bg-slate-900 w-20">
       <SelectValue placeholder="Select..." />
     </SelectTrigger>
     <SelectContent>

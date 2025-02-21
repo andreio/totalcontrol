@@ -12,6 +12,11 @@ import { CCPresetMessageEditor } from "./ccPresetMessageEditor";
 import { TCCCPresetMessageEditor } from "./tcccPresetMessageEditor";
 import { TCPCPresetMessageEditor } from "./tcpcPresetMessageEditor";
 import { PCPresetMessageEditor } from "./pcPresetMessageEditor";
+import {
+  ClipboardCheckIcon,
+  ClipboardPasteIcon,
+  DeleteIcon,
+} from "lucide-react";
 
 export const PresetMessage = ({ index }: { index: number }) => {
   const [msgType, setMsgType] = React.useState<MsgType>(MsgType.none);
@@ -26,7 +31,7 @@ export const PresetMessage = ({ index }: { index: number }) => {
             value={msgAction.toString()}
             onValueChange={(value) => setMsgAction(+value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-slate-900">
               <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent>
@@ -54,8 +59,8 @@ export const PresetMessage = ({ index }: { index: number }) => {
             value={msgType.toString()}
             onValueChange={(value) => setMsgType(+value)}
           >
-            <SelectTrigger>
-              <SelectValue />
+            <SelectTrigger className="bg-slate-900">
+              <SelectValue placeholder="select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={MsgType.none.toString()}>
@@ -76,10 +81,19 @@ export const PresetMessage = ({ index }: { index: number }) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex gap-4">
-          <Button className="w-14">Copy</Button>
-          <Button className="w-14">Paste</Button>
-          <Button className="w-14">Clear</Button>
+        <div className="flex gap-2">
+          <Button variant="secondary">
+            <ClipboardCheckIcon />
+            Copy
+          </Button>
+          <Button variant="secondary">
+            <ClipboardPasteIcon />
+            Paste
+          </Button>
+          <Button variant="secondary">
+            <DeleteIcon />
+            Clear
+          </Button>
         </div>
       </div>
       {msgType !== MsgType.none && (

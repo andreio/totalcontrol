@@ -1,13 +1,6 @@
+import { IMidiContext } from "@/consts";
+import { defaultContext, MidiContext } from "@/hooks/useMidiContext";
 import React from "react";
-
-export type IMidiContext = {
-  midiAccess?: MIDIAccess;
-  error?: string;
-};
-
-const defaultContext: IMidiContext = {};
-
-export const MidiContext = React.createContext<IMidiContext>(defaultContext);
 
 export const MidiProvider = ({ children }: React.PropsWithChildren) => {
   const [context, setContext] = React.useState<IMidiContext>(defaultContext);
