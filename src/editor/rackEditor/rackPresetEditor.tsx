@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -12,14 +11,11 @@ import {
   LoopToggleToText,
   RACK_CHANNELS,
 } from "@/consts";
-import { useMidiCommsContext } from "@/hooks/useMidiComms";
 import { useStateContext } from "@/hooks/useStateContext";
-import { MonitorUpIcon } from "lucide-react";
 
 export const RackPresetEditor = () => {
   const state = useStateContext();
   const currentState = state.getRackState();
-  const { sendRackPreset } = useMidiCommsContext();
   return (
     <div className=" bg-slate-600 p-3 w-full">
       <div className="grid grid-cols-5 gap-3 justify-center">
@@ -59,12 +55,6 @@ export const RackPresetEditor = () => {
             </Select>
           </div>
         ))}
-        <div className="flex gap-3 w-60 items-end">
-          <Button onClick={sendRackPreset}>
-            <MonitorUpIcon />
-            Save Preset
-          </Button>
-        </div>
       </div>
     </div>
   );
