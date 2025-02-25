@@ -4,15 +4,21 @@ import React from "react";
 
 export const MidiProvider = ({ children }: React.PropsWithChildren) => {
   const [context, setContext] = React.useState<IMidiContext>(defaultContext);
+
   React.useEffect(() => {
     navigator
       .requestMIDIAccess({
         sysex: true,
         software: true,
       })
-      .then((midiAccess) =>
+      .then(({ inputs, outputs }) =>
         setContext({
-          midiAccess,
+          input: Array.from(inputs.values()).find(
+            ({ name }) => name?.toLowerCase() === "total control"
+          ),
+          output: Array.from(outputs.values()).find(
+            ({ name }) => name?.toLowerCase() === "total control"
+          ),
         })
       )
       .catch((error) =>

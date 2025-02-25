@@ -1,8 +1,4 @@
 import "./App.css";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "./components/ui/button";
-import { useMidiContext } from "./hooks/useMidiContext";
-import { PresetPage } from "./editor/presetPage";
 import {
   Select,
   SelectContent,
@@ -10,12 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./components/ui/select";
-import { NumberSelect } from "./components/ui/numberSelect";
-import { MonitorUpIcon } from "lucide-react";
-
-const BUTTONS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+import React from "react";
+import { TotalControlPane } from "./editor/totalControlPane";
+import { TotalControlRackPane } from "./editor/totalControlRackPane";
+import { EDITOR_PANE } from "./consts";
+import { useMidiContext } from "./hooks/useMidiContext";
+import { Circle } from "lucide-react";
 
 function App() {
+  const [pane, selectPane] = React.useState<string>(EDITOR_PANE.CONTROL);
   const midiContext = useMidiContext();
   return (
     <>
@@ -26,70 +25,23 @@ function App() {
         />
         <div className="flex justify-start items-center gap-3 m-auto">
           <span>Editor: </span>
-          <Select>
+          <Select value={pane} onValueChange={selectPane}>
             <SelectTrigger>
               <SelectValue placeholder="Control unit" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="totalControl">Control Unit</SelectItem>
-              <SelectItem value="totalControlRack">Rack unit</SelectItem>
+              <SelectItem value={EDITOR_PANE.CONTROL}>Control Unit</SelectItem>
+              <SelectItem value={EDITOR_PANE.RACK}>Rack unit</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <div></div>
+        <div className="flex items-center justify-end gap-3 absolute">
+          Connection <Circle fill={midiContext.output ? "green" : ""} />
+        </div>
       </div>
       <div className="flex flex-col items-center">
-        <Tabs
-          defaultValue="A"
-          className="items-center flex flex-col w-[1200px]"
-        >
-          <div className="grid grid-cols-3 w-full">
-            <div className="flex justify-start items-center gap-4">
-              <span>Bank:</span>
-              <NumberSelect min={0} max={127} />
-            </div>
-            <div className="flex flex-row justify-center">
-              <TabsList className="grid w-fit grid-cols-4 grid-rows-2 h-30 items-center">
-                {BUTTONS.map((preset) => (
-                  <TabsTrigger
-                    className="w-14 h-14 transition-colors duration-300"
-                    key={`tab-${preset}`}
-                    value={preset}
-                  >
-                    {preset}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-            <div className="flex items-center justify-end">
-              <Button>
-                <MonitorUpIcon />
-                Save
-              </Button>
-            </div>
-          </div>
-
-          {...BUTTONS.map((preset) => (
-            <TabsContent
-              key={`content-${preset}`}
-              value={preset}
-              className="w-full"
-            >
-              <PresetPage></PresetPage>
-            </TabsContent>
-          ))}
-        </Tabs>
-        <Button
-          onClick={() => {
-            const output = midiContext.midiAccess?.outputs.get("-1171954640");
-            if (!output) {
-              return;
-            }
-            output.send([240, 126, 127, 6, 1, 247]);
-          }}
-        >
-          Test sysex
-        </Button>
+        {pane === EDITOR_PANE.CONTROL && <TotalControlPane />}
+        {pane === EDITOR_PANE.RACK && <TotalControlRackPane />}
       </div>
     </>
   );

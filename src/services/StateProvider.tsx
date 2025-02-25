@@ -1,40 +1,91 @@
-import { IState, IStateContext } from "@/consts";
+import {
+  EMPTY_CONTROLLER_STATE,
+  EMPTY_PRESET_IDS,
+  EMPTY_RACK_STATE,
+  IControllerState,
+  IRackState,
+  IStateContext,
+} from "@/consts";
 import { StateContext } from "@/hooks/useStateContext";
 import React from "react";
 
 export const StateProvider = ({ children }: React.PropsWithChildren) => {
-  const [appState, setAppState] = React.useState<IState>({
-    bank: 0,
-    messages: [],
-    name: "",
-    program: 0,
-    toggleName: "",
-  });
+  const [controllerState, setControllerState] =
+    React.useState<IControllerState>(EMPTY_CONTROLLER_STATE);
+  const [rackState, setRackState] =
+    React.useState<IRackState>(EMPTY_RACK_STATE);
+  const [controllerPresetIds, setControllerPresetIds] =
+    React.useState(EMPTY_PRESET_IDS);
+  const [rackPresetIds, setRackPresetIds] = React.useState(EMPTY_PRESET_IDS);
   const context = React.useMemo<IStateContext>(() => {
     return {
-      get() {
-        return appState;
+      getControllerState() {
+        return controllerState;
       },
-      setCurrent(bank, program) {
+      getAllControllerPresetIds() {
+        return controllerPresetIds;
+      },
+      setControllerState(state) {
+        setControllerState(state);
+      },
+      setControllerCurrent(bank, program) {
         console.log("setCurrent", bank, program);
-        setAppState({ ...appState, bank, program });
+        setControllerState({ ...EMPTY_CONTROLLER_STATE, bank, program });
       },
-      setName(name) {
-        setAppState({ ...appState, name });
+      setControllerPresetName(name) {
+        setControllerState({ ...controllerState, name });
         console.log("setName", name);
       },
-      setToggleName(toggleName) {
-        setAppState({ ...appState, toggleName });
-        console.log("setToggleName", name);
+      setControllerTogglePresetName(toggleName) {
+        setControllerState({ ...controllerState, toggleName });
+        console.log("setToggleName", toggleName);
       },
-      setMessage(index, messageState) {
-        const messages = appState.messages.slice();
+      setControllerBankName(bankName) {
+        setControllerState({ ...controllerState, bankName });
+        console.log("setToggleName", bankName);
+      },
+      setControllerMessage(index, messageState) {
+        const messages = controllerState.messages.slice();
         messages[index] = messageState;
-        setAppState({ ...appState, messages });
+        setControllerState({ ...controllerState, messages });
         console.log("setMessage", index, messageState);
       },
+      setAllControllerPresetIds(presetIds) {
+        setControllerPresetIds(presetIds);
+      },
+      getRackState() {
+        return rackState;
+      },
+      getAllRackPresetIds() {
+        return rackPresetIds;
+      },
+      setRackState(state) {
+        setRackState(state);
+      },
+      setRackCurrent(bank, program) {
+        setRackState({
+          ...EMPTY_RACK_STATE,
+          bank,
+          program,
+        });
+      },
+      setRackLoopsNames(loopNames) {
+        setRackState({ ...rackState, loopNames });
+      },
+      setRackPresetLoops(loops) {
+        setRackState({ ...rackState, loops });
+      },
+      setRackPresetName(name) {
+        setRackState({ ...rackState, name });
+      },
+      setRackBankName(bankName) {
+        setRackState({ ...rackState, bankName });
+      },
+      setAllRackPresetIds(presetIds) {
+        setRackPresetIds(presetIds);
+      },
     };
-  }, [appState]);
+  }, [controllerPresetIds, controllerState, rackPresetIds, rackState]);
   return (
     <StateContext.Provider value={context}>{children}</StateContext.Provider>
   );
