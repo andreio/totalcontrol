@@ -13,7 +13,6 @@ import {
   RACK_LOOPS,
 } from "@/consts";
 import { useStateContext } from "@/hooks/useStateContext";
-import React from "react";
 
 export const TCCCPresetMessageEditor = ({
   state,

@@ -162,7 +162,7 @@ export const makeRackLoopNamesData = (loopNames: string[]) =>
 export const parseRackLoopNamesData = (data: number[]) =>
   Array.from({ length: 9 }).map(() => codesToStr(data.splice(0, 9)));
 
-export const parseControllerPresetIdsData = (data: number[]): PresetId[] =>
+export const parsePresetIdsData = (data: number[]): PresetId[] =>
   Array.from({ length: 127 }).map(() => ({
     bank: data.shift() || 0,
     preset: data.shift() || 0,
