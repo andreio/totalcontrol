@@ -61,7 +61,7 @@ export const PresetSelector = ({
   }, [onPresetSelect, pane, presetValue, state]);
   return (
     <Select value={selectedValue} onValueChange={onSelect}>
-      <SelectTrigger className="w-[280px]">
+      <SelectTrigger className="w-[280px] bg-slate-900 ">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

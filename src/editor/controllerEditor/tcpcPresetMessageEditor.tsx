@@ -9,7 +9,7 @@ export const TCPCPresetMessageEditor = ({
 }) => {
   const { setControllerMessage: setMessage } = useStateContext();
   return (
-    <div className="grid grid-cols-3 w-fit justify-start">
+    <div className="grid grid-cols-3 w-fit justify-start ">
       <div>
         <span>Preset:</span>
         <PresetSelector

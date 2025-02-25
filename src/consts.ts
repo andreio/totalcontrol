@@ -60,6 +60,15 @@ export interface IMidiContext {
   error?: string;
 }
 
+export interface IMidiCommsContext {
+  requestControllerPreset(): void;
+  sendControllerPreset(): void;
+  requestRackPreset(): void;
+  sendRackPreset(): void;
+  requestRackLoopNames(): void;
+  sendRackLoopNames(): void;
+}
+
 export type PresetId = {
   presetName: string;
   preset: number;
@@ -84,7 +93,8 @@ export interface IStateContext {
   setRackPresetName(name: string): void;
   setRackBankName(name: string): void;
   setRackPresetLoops(loops: LoopToggle[]): void;
-  setRackLoopsNames(names: string[]): void;
+  setRackLoopNames(names: string[]): void;
+  getRackLoopNames(): string[];
   getAllControllerPresetIds(): PresetId[];
   getAllRackPresetIds(): PresetId[];
   setAllControllerPresetIds(presetIds: PresetId[]): void;
@@ -114,7 +124,6 @@ export type IControllerMessageState = {
 };
 
 export interface IRackState {
-  loopNames: string[];
   bank: number;
   bankName: string;
   program: number;
@@ -130,13 +139,24 @@ export interface IRackStateLoop {
 export const SYSEX_START = 0xf0;
 export const SYSEX_STOP = 0xf7;
 
-export enum SYSEX_COMMANDS {
-  SEND_PRESET_STATE,
-  SELECT_BANK,
-  SELECT_PRESET,
-  SET_NAME,
-  SET_TOGGLE_NAME,
-  SET_MESSAGE,
+export enum SYSEX_REQUESTS {
+  REQUEST_CONTROLLER_PRESET_STATE,
+  SEND_CONTROLLER_PRESET_STATE,
+  REQUEST_RACK_PRESET_STATE,
+  SEND_RACK_PRESET_STATE,
+  REQUEST_RACK_LOOP_NAMES,
+  SEND_RACK_LOOP_NAMES,
+  REQUEST_CONTROLLER_PRESET_IDS,
+  REQUEST_RACK_PRESET_IDS,
+  PING,
+}
+export enum SYSEX_RESPONSES {
+  RECEIVE_CONTROLLER_PRESET_STATE,
+  RECEIVE_RACK_PRESET_STATE,
+  RECEIVE_CONTROLLER_PRESET_IDS,
+  RECEIVE_RACK_PRESET_IDS,
+  RECEIVE_RACK_LOOP_NAMES,
+  PONG,
 }
 
 export const EMPTY_MESSAGE_STATE = {
@@ -172,13 +192,24 @@ export const EMPTY_PRESET_STATE: IRackStateLoop = {
 };
 
 export const EMPTY_RACK_STATE: IRackState = {
-  loopNames: ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "S1", "S2"],
   program: 0,
   loops: Array.from({ length: 9 }).map(() => LoopToggle.unset),
   name: "",
   bank: 0,
   bankName: "",
 };
+
+export const DEFAULT_LOOP_NAMES = [
+  "L1",
+  "L2",
+  "L3",
+  "L4",
+  "L5",
+  "L6",
+  "L7",
+  "S1",
+  "S2",
+];
 
 export const RACK_LOOPS = 7;
 export const RACK_CHANNELS = 2;

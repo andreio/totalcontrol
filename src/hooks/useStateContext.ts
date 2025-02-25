@@ -1,4 +1,5 @@
 import {
+  DEFAULT_LOOP_NAMES,
   EMPTY_CONTROLLER_STATE,
   EMPTY_PRESET_IDS,
   EMPTY_RACK_STATE,
@@ -33,7 +34,10 @@ export const defaultContext: IStateContext = {
   setAllControllerPresetIds() {},
   setAllRackPresetIds() {},
   setControllerBankName() {},
-  setRackLoopsNames() {},
+  setRackLoopNames() {},
+  getRackLoopNames() {
+    return DEFAULT_LOOP_NAMES;
+  },
   setRackBankName() {},
 };
 

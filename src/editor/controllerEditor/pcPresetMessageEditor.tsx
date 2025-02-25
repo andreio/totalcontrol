@@ -43,8 +43,8 @@ export const PCPresetMessageEditor = ({
       <div className="flex flex-row gap-3 items-center">
         <span>MIDI Channel:</span>
         <NumberSelect
-          min={1}
-          max={16}
+          min={0}
+          max={15}
           value={state.midiChannel?.toString()}
           onValueChange={(val) =>
             setMessage(state.index, {

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { MonitorUpIcon } from "lucide-react";
 import { PresetPage } from "./controllerEditor/presetPage";
-import { useSendPresetState } from "@/hooks/useMidiComms";
+import { useMidiCommsContext } from "@/hooks/useMidiComms";
 import { useStateContext } from "@/hooks/useStateContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BUTTON_LABELS, EDITOR_PANE } from "@/consts";
@@ -9,7 +9,8 @@ import { PresetSelector } from "./presetSelector";
 
 export const TotalControlPane = () => {
   const state = useStateContext();
-  const sendSysex = useSendPresetState();
+  const { sendRackPreset } = useMidiCommsContext();
+
   return (
     <Tabs
       defaultValue="A"
@@ -41,7 +42,7 @@ export const TotalControlPane = () => {
           </TabsList>
         </div>
         <div className="flex items-center justify-end">
-          <Button onClick={sendSysex}>
+          <Button onClick={sendRackPreset}>
             <MonitorUpIcon />
             Save
           </Button>

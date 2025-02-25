@@ -43,8 +43,8 @@ export const CCPresetMessageEditor = ({
       <div className="flex flex-row items-center gap-3">
         <span>MIDI Channel:</span>
         <NumberSelect
-          min={1}
-          max={16}
+          min={0}
+          max={15}
           onValueChange={(val) =>
             setMessage(state.index, {
               ...state,

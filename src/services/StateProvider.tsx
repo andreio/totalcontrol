@@ -1,4 +1,5 @@
 import {
+  DEFAULT_LOOP_NAMES,
   EMPTY_CONTROLLER_STATE,
   EMPTY_PRESET_IDS,
   EMPTY_RACK_STATE,
@@ -16,6 +17,7 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
     React.useState<IRackState>(EMPTY_RACK_STATE);
   const [controllerPresetIds, setControllerPresetIds] =
     React.useState(EMPTY_PRESET_IDS);
+  const [rackLoopNames, setRackLoopNames] = React.useState(DEFAULT_LOOP_NAMES);
   const [rackPresetIds, setRackPresetIds] = React.useState(EMPTY_PRESET_IDS);
   const context = React.useMemo<IStateContext>(() => {
     return {
@@ -69,8 +71,11 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
           program,
         });
       },
-      setRackLoopsNames(loopNames) {
-        setRackState({ ...rackState, loopNames });
+      setRackLoopNames(loopNames) {
+        setRackLoopNames(loopNames);
+      },
+      getRackLoopNames() {
+        return rackLoopNames;
       },
       setRackPresetLoops(loops) {
         setRackState({ ...rackState, loops });
@@ -85,7 +90,13 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
         setRackPresetIds(presetIds);
       },
     };
-  }, [controllerPresetIds, controllerState, rackPresetIds, rackState]);
+  }, [
+    controllerPresetIds,
+    controllerState,
+    rackLoopNames,
+    rackPresetIds,
+    rackState,
+  ]);
   return (
     <StateContext.Provider value={context}>{children}</StateContext.Provider>
   );
