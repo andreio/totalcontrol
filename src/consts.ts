@@ -67,6 +67,9 @@ export interface IMidiCommsContext {
   sendRackPreset(): void;
   requestRackLoopNames(): void;
   sendRackLoopNames(): void;
+  requestControllerPresetIds(): void;
+  requestRackPresetIds(): void;
+  init(): void;
 }
 
 export type PresetId = {

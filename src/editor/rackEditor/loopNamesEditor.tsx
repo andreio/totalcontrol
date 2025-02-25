@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RACK_CHANNELS, RACK_LOOPS } from "@/consts";
+import { useMidiCommsContext } from "@/hooks/useMidiComms";
 import { MonitorUpIcon } from "lucide-react";
 
 export const LoopNamesEditor = () => {
+  const { sendRackLoopNames } = useMidiCommsContext();
+
   return (
     <div className="p-3 grid grid-cols-5 gap-3 bg-slate-800 rounded-sm my-3 items-end align-middle ">
       {Array.from({ length: RACK_LOOPS }).map((_, index) => (
@@ -25,7 +28,7 @@ export const LoopNamesEditor = () => {
         </div>
       ))}
       <div className="flex flex-col gap-3 w-40">
-        <Button>
+        <Button onClick={sendRackLoopNames}>
           <MonitorUpIcon />
           Save names
         </Button>

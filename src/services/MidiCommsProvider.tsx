@@ -4,10 +4,12 @@ import { useMidiContext } from "@/hooks/useMidiContext";
 import { useStateContext } from "@/hooks/useStateContext";
 import {
   makeControllerPresetData,
+  makeControllerPresetIdsRequestData,
   makeControllerPresetRequestData,
   makeRackLoopNamesData,
   makeRackLoopNamesRequestData,
   makeRackPresetData,
+  makeRackPresetIdsRequestData,
   makeRackPresetRequestData,
   parseControllerPresetData,
   parsePresetIdsData,
@@ -61,11 +63,22 @@ export const MidiCommsContextProvider = ({
       requestControllerPreset: () => send(makeControllerPresetRequestData()),
       requestRackLoopNames: () => send(makeRackLoopNamesRequestData()),
       requestRackPreset: () => midi.output?.send(makeRackPresetRequestData()),
+      requestControllerPresetIds: () =>
+        midi.output?.send(makeControllerPresetIdsRequestData()),
+      requestRackPresetIds: () =>
+        midi.output?.send(makeRackPresetIdsRequestData()),
       sendControllerPreset: () =>
         send(makeControllerPresetData(state.getControllerState())),
       sendRackLoopNames: () =>
         send(makeRackLoopNamesData(state.getRackLoopNames())),
       sendRackPreset: () => send(makeRackPresetData(state.getRackState())),
+      init: () => {
+        context.requestControllerPreset();
+        context.requestControllerPresetIds();
+        context.requestRackPreset();
+        context.requestRackPresetIds();
+        context.requestRackLoopNames();
+      },
     }),
     [midi.output, send, state]
   );

@@ -15,6 +15,7 @@ import { RackPresetEditor } from "./rackEditor/rackPresetEditor";
 export const TotalControlRackPane = () => {
   const state = useStateContext();
   const currentState = state.getRackState();
+
   return (
     <div className="flex flex-col w-[1200px] gap-3 p-3">
       <Collapsible className="mb-3">

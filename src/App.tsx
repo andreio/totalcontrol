@@ -12,13 +12,16 @@ import { TotalControlRackPane } from "./editor/totalControlRackPane";
 import { EDITOR_PANE } from "./consts";
 import { useMidiContext } from "./hooks/useMidiContext";
 import { Circle } from "lucide-react";
+import { useMidiCommsContext } from "./hooks/useMidiComms";
 
 function App() {
   const [pane, selectPane] = React.useState<string>(EDITOR_PANE.CONTROL);
   const midiContext = useMidiContext();
+  const { init } = useMidiCommsContext();
+  React.useEffect(() => init(), [init]);
   return (
     <>
-      <div className="flex flex-row items-center w-full mb-9 bg-slate-800 p-3">
+      <div className="flex flex-row  items-center w-full mb-9 bg-slate-800 p-3">
         <img
           src="Logo2.png"
           className="w-48 rounded-sm fixed left-0 bottom-0"

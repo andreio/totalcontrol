@@ -9,6 +9,9 @@ export const defaultContext: IMidiCommsContext = {
   sendControllerPreset() {},
   sendRackLoopNames() {},
   sendRackPreset() {},
+  requestControllerPresetIds() {},
+  requestRackPresetIds() {},
+  init() {},
 };
 
 export const MidiCommsContext =

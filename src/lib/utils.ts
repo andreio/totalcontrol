@@ -174,12 +174,12 @@ export const pingRequest = () => sysex([SYSEX_REQUESTS.PING]);
 
 export const makeControllerPresetRequestData = () =>
   sysex([SYSEX_REQUESTS.REQUEST_CONTROLLER_PRESET_STATE]);
-export const makeControllerPresetIdsData = () =>
+export const makeControllerPresetIdsRequestData = () =>
   sysex([SYSEX_REQUESTS.REQUEST_CONTROLLER_PRESET_IDS]);
 
 export const makeRackPresetRequestData = () =>
   sysex([SYSEX_REQUESTS.REQUEST_RACK_PRESET_STATE]);
-export const makeRackPresetIdsData = () =>
+export const makeRackPresetIdsRequestData = () =>
   sysex([SYSEX_REQUESTS.REQUEST_RACK_PRESET_IDS]);
 export const makeRackLoopNamesRequestData = () =>
   sysex([SYSEX_REQUESTS.REQUEST_RACK_LOOP_NAMES]);

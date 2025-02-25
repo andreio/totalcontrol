@@ -9,7 +9,7 @@ import { PresetSelector } from "./presetSelector";
 
 export const TotalControlPane = () => {
   const state = useStateContext();
-  const { sendRackPreset } = useMidiCommsContext();
+  const { sendControllerPreset } = useMidiCommsContext();
 
   return (
     <Tabs
@@ -42,7 +42,7 @@ export const TotalControlPane = () => {
           </TabsList>
         </div>
         <div className="flex items-center justify-end">
-          <Button onClick={sendRackPreset}>
+          <Button onClick={sendControllerPreset}>
             <MonitorUpIcon />
             Save
           </Button>
