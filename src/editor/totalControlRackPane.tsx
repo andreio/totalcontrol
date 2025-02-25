@@ -17,12 +17,7 @@ import React from "react";
 export const TotalControlRackPane = () => {
   const state = useStateContext();
   const rackState = state.getRackState();
-  const { sendRackPreset, requestRackPreset } = useMidiCommsContext();
-  React.useEffect(requestRackPreset, [
-    rackState.bank,
-    rackState.program,
-    requestRackPreset,
-  ]);
+  const { sendRackPreset } = useMidiCommsContext();
   return (
     <div className="flex flex-col w-[1200px] gap-3 p-3">
       <Collapsible className="mb-3">

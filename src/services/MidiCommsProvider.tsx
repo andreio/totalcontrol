@@ -25,7 +25,10 @@ export const MidiCommsContextProvider = ({
   const midi = useMidiContext();
   const state = useStateContext();
   const send = React.useCallback(
-    (data: number[]) => midi.output?.send(data),
+    (data: number[]) => {
+      console.log(parseResponse(data));
+      midi.output?.send(data);
+    },
     [midi.output]
   );
   React.useEffect(() => {
@@ -62,11 +65,10 @@ export const MidiCommsContextProvider = ({
     () => ({
       requestControllerPreset: () => send(makeControllerPresetRequestData()),
       requestRackLoopNames: () => send(makeRackLoopNamesRequestData()),
-      requestRackPreset: () => midi.output?.send(makeRackPresetRequestData()),
+      requestRackPreset: () => send(makeRackPresetRequestData()),
       requestControllerPresetIds: () =>
-        midi.output?.send(makeControllerPresetIdsRequestData()),
-      requestRackPresetIds: () =>
-        midi.output?.send(makeRackPresetIdsRequestData()),
+        send(makeControllerPresetIdsRequestData()),
+      requestRackPresetIds: () => send(makeRackPresetIdsRequestData()),
       sendControllerPreset: () =>
         send(makeControllerPresetData(state.getControllerState())),
       sendRackLoopNames: () =>
@@ -80,7 +82,7 @@ export const MidiCommsContextProvider = ({
         context.requestRackLoopNames();
       },
     }),
-    [midi.output, send, state]
+    [send, state]
   );
   return (
     <MidiCommsContext.Provider value={context}>

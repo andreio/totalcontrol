@@ -15,10 +15,17 @@ import { Circle } from "lucide-react";
 import { useMidiCommsContext } from "./hooks/useMidiComms";
 
 function App() {
+  const initialized = React.useRef(false);
   const [pane, selectPane] = React.useState<string>(EDITOR_PANE.CONTROL);
   const midiContext = useMidiContext();
   const { init } = useMidiCommsContext();
-  React.useEffect(() => init(), [init]);
+  React.useEffect(() => {
+    if (initialized.current) {
+      return;
+    }
+    init();
+    initialized.current = true;
+  }, [init]);
   return (
     <>
       <div className="flex flex-row  items-center w-full mb-9 bg-slate-800 p-3">

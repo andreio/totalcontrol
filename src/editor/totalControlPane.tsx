@@ -6,18 +6,10 @@ import { useStateContext } from "@/hooks/useStateContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BUTTON_LABELS, EDITOR_PANE } from "@/consts";
 import { PresetSelector } from "./presetSelector";
-import React from "react";
 
 export const TotalControlPane = () => {
   const state = useStateContext();
-  const { sendControllerPreset, requestControllerPreset } =
-    useMidiCommsContext();
-  const controllerState = state.getControllerState();
-  React.useEffect(requestControllerPreset, [
-    requestControllerPreset,
-    controllerState.bank,
-    controllerState.program,
-  ]);
+  const { sendControllerPreset } = useMidiCommsContext();
   return (
     <Tabs
       defaultValue="A"
