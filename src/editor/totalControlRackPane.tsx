@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { useStateContext } from "@/hooks/useStateContext";
 import { RackPresetEditor } from "./rackEditor/rackPresetEditor";
 import { useMidiCommsContext } from "@/hooks/useMidiComms";
-import React from "react";
 
 export const TotalControlRackPane = () => {
   const state = useStateContext();

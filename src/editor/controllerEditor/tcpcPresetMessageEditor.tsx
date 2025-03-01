@@ -4,8 +4,10 @@ import { useStateContext } from "@/hooks/useStateContext";
 
 export const TCPCPresetMessageEditor = ({
   state,
+  presetIndex,
 }: {
   state: IControllerMessageState;
+  presetIndex: number;
 }) => {
   const { setControllerMessage: setMessage } = useStateContext();
   return (
@@ -14,10 +16,10 @@ export const TCPCPresetMessageEditor = ({
         <span>Preset:</span>
         <PresetSelector
           pane={EDITOR_PANE.RACK}
-          onPresetSelect={(rackBank, rackPreset) =>
-            setMessage(state.index, { ...state, rackBank, rackPreset })
+          onPresetSelect={(index) =>
+            setMessage(presetIndex, { ...state, rackPreset: index })
           }
-          presetValue={[state.rackBank, state.rackPreset]}
+          presetIndex={presetIndex}
         />
       </div>
     </div>

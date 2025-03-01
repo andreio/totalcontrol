@@ -5,8 +5,10 @@ import { useStateContext } from "@/hooks/useStateContext";
 
 export const PCPresetMessageEditor = ({
   state,
+  presetIndex,
 }: {
   state: IControllerMessageState;
+  presetIndex: number;
 }) => {
   const { setControllerMessage: setMessage } = useStateContext();
   return (
@@ -18,9 +20,9 @@ export const PCPresetMessageEditor = ({
           max={127}
           value={state.pcNumber?.toString()}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
-              ccNumber: +val,
+              pcNumber: +val,
               type: MsgType.pc,
             })
           }
@@ -32,7 +34,7 @@ export const PCPresetMessageEditor = ({
           className="bg-slate-900"
           checked={state.omni}
           onCheckedChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               omni: val,
               type: MsgType.pc,
@@ -47,7 +49,7 @@ export const PCPresetMessageEditor = ({
           max={15}
           value={state.midiChannel?.toString()}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               midiChannel: +val,
               type: MsgType.pc,

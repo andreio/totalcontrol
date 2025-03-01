@@ -7,28 +7,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BUTTON_LABELS, EDITOR_PANE, PresetId } from "@/consts";
+import {
+  BUTTON_LABELS,
+  EDITOR_PANE,
+  PresetId,
+  PRESETS_TO_BANK,
+} from "@/consts";
+import { useMidiCommsContext } from "@/hooks/useMidiComms";
 import { useStateContext } from "@/hooks/useStateContext";
 import React from "react";
-
-const PRESETS_TO_BANK = 8;
-const sep = "%";
-const ptos = (bank: number, program: number) => `${bank}${sep}${program}`;
-const stop = (key: string) => key.split(sep).map((x) => +x);
 
 export const PresetSelector = ({
   pane,
   onPresetSelect,
-  presetValue,
+  presetIndex,
 }: {
   pane: EDITOR_PANE;
-  onPresetSelect?: (bank: number, preset: number) => void;
-  presetValue?: [number, number];
+  onPresetSelect?: (presetIndex: number) => void;
+  presetIndex?: number;
 }) => {
   const state = useStateContext();
+  const { requestControllerPreset, requestRackPreset } = useMidiCommsContext();
   const { groupedPresets, onSelect, selectedValue } = React.useMemo(() => {
     const controllerState = state.getControllerState();
     const rackState = state.getRackState();
+
     const groupedPresets: PresetId[][] = [];
     const presets = (
       pane === EDITOR_PANE.CONTROL
@@ -40,27 +43,32 @@ export const PresetSelector = ({
     while (groupsLeft--) {
       groupedPresets.push(presets.splice(0, PRESETS_TO_BANK));
     }
-    console.log(JSON.stringify(groupedPresets));
 
-    const selectedValue = presetValue
-      ? ptos(...presetValue)
+    const selectedValue = presetIndex
+      ? presetIndex
       : pane === EDITOR_PANE.CONTROL
-      ? ptos(controllerState.bank, controllerState.program)
-      : ptos(rackState.bank, rackState.program);
+      ? controllerState.index
+      : rackState.index;
 
     const onSelect = (key: string) => {
-      const [bank, preset] = stop(key);
       const select =
         onPresetSelect ??
         (pane === EDITOR_PANE.CONTROL
-          ? state.setControllerCurrent
-          : state.setRackCurrent);
-      select(bank, preset);
+          ? requestControllerPreset
+          : requestRackPreset);
+      select(+key);
     };
     return { groupedPresets, selectedValue, onSelect };
-  }, [onPresetSelect, pane, presetValue, state]);
+  }, [
+    onPresetSelect,
+    pane,
+    presetIndex,
+    requestControllerPreset,
+    requestRackPreset,
+    state,
+  ]);
   return (
-    <Select value={selectedValue} onValueChange={onSelect}>
+    <Select value={selectedValue.toString()} onValueChange={onSelect}>
       <SelectTrigger className="w-[280px] bg-slate-900 ">
         <SelectValue />
       </SelectTrigger>
@@ -70,16 +78,16 @@ export const PresetSelector = ({
           return (
             <SelectGroup key={`selectGroup-${index}`}>
               <SelectLabel className="bg-slate-300 text-slate-700">
-                {`${sample.bank.toString().padStart(2, "0")}.${
-                  sample.bankName
-                }`}
+                {`${(sample.index / PRESETS_TO_BANK)
+                  .toString()
+                  .padStart(2, "0")}.${sample.bankName}`}
               </SelectLabel>
-              {presets.map(({ bank, preset, presetName }, index) => (
+              {presets.map(({ index: presetIndex, presetName }) => (
                 <SelectItem
-                  value={ptos(bank, preset)}
-                  key={`selectPreset-${index}`}
+                  value={presetIndex.toString()}
+                  key={`selectPreset-${presetIndex}`}
                 >
-                  {`${BUTTON_LABELS[preset]}.${presetName}`}
+                  {`${BUTTON_LABELS[presetIndex % 8]}.${presetName}`}
                 </SelectItem>
               ))}
             </SelectGroup>

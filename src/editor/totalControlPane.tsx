@@ -9,18 +9,21 @@ import { PresetSelector } from "./presetSelector";
 
 export const TotalControlPane = () => {
   const state = useStateContext();
-  const { sendControllerPreset } = useMidiCommsContext();
+  const { sendControllerPreset, requestControllerPreset } =
+    useMidiCommsContext();
   return (
     <Tabs
       defaultValue="A"
-      className="items-center flex flex-col w-[1200px]"
-      value={BUTTON_LABELS[state.getControllerState().program]}
-      onValueChange={(val) =>
-        state.setControllerCurrent(
-          state.getControllerState().bank,
-          val.charCodeAt(0) - 65
-        )
-      }
+      activationMode="manual"
+      className="items-center flex flex-col w-fit"
+      value={BUTTON_LABELS[state.getControllerState().index % 8]}
+      onValueChange={(val) => {
+        requestControllerPreset(
+          Math.floor(state.getControllerState().index / 8) * 8 +
+            val.charCodeAt(0) -
+            65
+        );
+      }}
     >
       <div className="grid grid-cols-3 w-full">
         <div className="flex justify-start items-center gap-4">
@@ -29,13 +32,18 @@ export const TotalControlPane = () => {
         </div>
         <div className="flex flex-row justify-center">
           <TabsList className="grid w-fit grid-cols-4 grid-rows-2 h-30 items-center">
-            {BUTTON_LABELS.map((preset) => (
+            {BUTTON_LABELS.map((preset, index) => (
               <TabsTrigger
-                className="w-14 h-14 transition-colors duration-300"
+                className="w-28 h-14 transition-colors duration-300"
                 key={`tab-${preset}`}
                 value={preset}
               >
-                {preset}
+                {
+                  state.getAllControllerPresetIds()[
+                    Math.floor(state.getControllerState().index / 8) * 8 +
+                      (index % 8)
+                  ].presetName
+                }
               </TabsTrigger>
             ))}
           </TabsList>

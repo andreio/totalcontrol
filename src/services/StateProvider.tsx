@@ -19,6 +19,7 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
     React.useState(EMPTY_PRESET_IDS);
   const [rackLoopNames, setRackLoopNames] = React.useState(DEFAULT_LOOP_NAMES);
   const [rackPresetIds, setRackPresetIds] = React.useState(EMPTY_PRESET_IDS);
+
   const context = React.useMemo<IStateContext>(() => {
     return {
       getControllerState() {
@@ -30,27 +31,22 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
       setControllerState(state) {
         setControllerState(state);
       },
-      setControllerCurrent(bank, program) {
-        console.log("setCurrent", bank, program);
-        setControllerState({ ...EMPTY_CONTROLLER_STATE, bank, program });
+      setControllerCurrent(index) {
+        setControllerState({ ...EMPTY_CONTROLLER_STATE, index });
       },
       setControllerPresetName(name) {
         setControllerState({ ...controllerState, name });
-        console.log("setName", name);
       },
       setControllerTogglePresetName(toggleName) {
         setControllerState({ ...controllerState, toggleName });
-        console.log("setToggleName", toggleName);
       },
       setControllerBankName(bankName) {
         setControllerState({ ...controllerState, bankName });
-        console.log("setToggleName", bankName);
       },
       setControllerMessage(index, messageState) {
         const messages = controllerState.messages.slice();
         messages[index] = messageState;
         setControllerState({ ...controllerState, messages });
-        console.log("setMessage", index, messageState);
       },
       setAllControllerPresetIds(presetIds) {
         setControllerPresetIds(presetIds);
@@ -64,11 +60,10 @@ export const StateProvider = ({ children }: React.PropsWithChildren) => {
       setRackState(state) {
         setRackState(state);
       },
-      setRackCurrent(bank, program) {
+      setRackCurrent(index) {
         setRackState({
           ...EMPTY_RACK_STATE,
-          bank,
-          program,
+          index,
         });
       },
       setRackLoopNames(loopNames) {

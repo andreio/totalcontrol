@@ -4,8 +4,10 @@ import { useStateContext } from "@/hooks/useStateContext";
 
 export const CCPresetMessageEditor = ({
   state,
+  presetIndex,
 }: {
   state: IControllerMessageState;
+  presetIndex: number;
 }) => {
   const { setControllerMessage: setMessage } = useStateContext();
   return (
@@ -16,7 +18,7 @@ export const CCPresetMessageEditor = ({
           min={0}
           max={127}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               ccNumber: +val,
               type: MsgType.cc,
@@ -31,7 +33,7 @@ export const CCPresetMessageEditor = ({
           min={0}
           max={127}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               ccValue: +val,
               type: MsgType.cc,
@@ -46,7 +48,7 @@ export const CCPresetMessageEditor = ({
           min={0}
           max={15}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               midiChannel: +val,
               type: MsgType.cc,

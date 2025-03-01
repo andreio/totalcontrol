@@ -11,7 +11,11 @@ export const defaultContext: IMidiCommsContext = {
   sendRackPreset() {},
   requestControllerPresetIds() {},
   requestRackPresetIds() {},
-  init() {},
+  ping() {},
+  requestFactoryReset() {},
+  init() {
+    return false;
+  },
 };
 
 export const MidiCommsContext =

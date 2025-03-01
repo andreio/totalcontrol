@@ -16,8 +16,10 @@ import { useStateContext } from "@/hooks/useStateContext";
 
 export const TCCCPresetMessageEditor = ({
   state,
+  presetIndex,
 }: {
   state: IControllerMessageState;
+  presetIndex: number;
 }) => {
   const { setControllerMessage } = useStateContext();
 
@@ -31,7 +33,7 @@ export const TCCCPresetMessageEditor = ({
             onValueChange={(toggle) => {
               const loops = [...state.loops];
               loops[index] = +toggle;
-              setControllerMessage(state.index, {
+              setControllerMessage(presetIndex, {
                 ...state,
                 loops,
               });
@@ -62,7 +64,7 @@ export const TCCCPresetMessageEditor = ({
             onValueChange={(toggle) => {
               const loops = [...state.loops];
               loops[RACK_LOOPS + index] = +toggle;
-              setControllerMessage(state.index, {
+              setControllerMessage(presetIndex, {
                 ...state,
                 loops,
               });

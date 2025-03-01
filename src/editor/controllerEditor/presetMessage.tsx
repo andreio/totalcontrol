@@ -27,25 +27,8 @@ import { TapPresetMessageEditor } from "./tapPresetMessageEditor";
 import { useStateContext } from "@/hooks/useStateContext";
 
 export const PresetMessage = ({ index }: { index: number }) => {
-  const [msgType, setMsgType] = React.useState<MsgType>(MsgType.none);
-  const [msgAction, setMsgAction] = React.useState<MsgAction>(MsgAction.none);
   const state = useStateContext();
-  const currentMessageState = React.useMemo(
-    () => ({
-      ...(state.getControllerState().messages[index] || {
-        index,
-        action: msgAction,
-        ccNumber: 0,
-        ccValue: 0,
-        loops: [],
-        midiChannel: 0,
-        omni: false,
-        pcNumber: 0,
-        rackPreset: 0,
-      }),
-    }),
-    [index, msgAction, state]
-  );
+  const controllerState = state.getControllerState();
   return (
     <div className="flex flex-col items-start my-3 bg-slate-700 rounded-sm overflow-hidden">
       <div className="grid grid-cols-4 grid-rows-1 p-3 gap-3  items-center">
@@ -53,8 +36,12 @@ export const PresetMessage = ({ index }: { index: number }) => {
         <div className="flex items-center gap-x-3 w-60">
           <span>Action:</span>
           <Select
-            value={msgAction.toString()}
-            onValueChange={(value) => setMsgAction(+value)}
+            value={controllerState.messages[index].action.toString()}
+            onValueChange={(value) => {
+              const messages = controllerState.messages.slice();
+              messages[index].action = +value;
+              state.setControllerState({ ...controllerState, messages });
+            }}
           >
             <SelectTrigger className="bg-slate-900">
               <SelectValue placeholder="Select..." />
@@ -83,12 +70,16 @@ export const PresetMessage = ({ index }: { index: number }) => {
         </div>
 
         <div className="flex items-center gap-x-3">
-          {msgAction !== MsgAction.tap && (
+          {controllerState.messages[index].action !== MsgAction.tap && (
             <>
               <span>Type:</span>
               <Select
-                value={msgType.toString()}
-                onValueChange={(value) => setMsgType(+value)}
+                value={controllerState.messages[index].type.toString()}
+                onValueChange={(value) => {
+                  const messages = controllerState.messages.slice();
+                  messages[index].type = +value;
+                  state.setControllerState({ ...controllerState, messages });
+                }}
               >
                 <SelectTrigger className="bg-slate-900">
                   <SelectValue placeholder="select" />
@@ -129,9 +120,15 @@ export const PresetMessage = ({ index }: { index: number }) => {
           </Button>
         </div>
       </div>
-      {(msgType !== MsgType.none || msgAction === MsgAction.tap) && (
+      {(controllerState.messages[index].type !== MsgType.none ||
+        controllerState.messages[index].action === MsgAction.tap) && (
         <div className=" bg-slate-600 p-3 w-full">
-          {getMessageEditor(msgAction, msgType, currentMessageState)}
+          {getMessageEditor(
+            controllerState.messages[index].action,
+            controllerState.messages[index].type,
+            controllerState.messages[index],
+            index
+          )}
         </div>
       )}
     </div>
@@ -141,21 +138,26 @@ export const PresetMessage = ({ index }: { index: number }) => {
 function getMessageEditor(
   msgAction: MsgAction,
   msgType: MsgType,
-  messageState: IControllerMessageState
+  messageState: IControllerMessageState,
+  index: number
 ) {
   if (msgAction === MsgAction.tap) {
-    return <TapPresetMessageEditor state={messageState} />;
+    return <TapPresetMessageEditor state={messageState} presetIndex={index} />;
   }
   switch (msgType) {
     case MsgType.none:
       return null;
     case MsgType.cc:
-      return <CCPresetMessageEditor state={messageState} />;
+      return <CCPresetMessageEditor state={messageState} presetIndex={index} />;
     case MsgType.pc:
-      return <PCPresetMessageEditor state={messageState} />;
+      return <PCPresetMessageEditor state={messageState} presetIndex={index} />;
     case MsgType.tccc:
-      return <TCCCPresetMessageEditor state={messageState} />;
+      return (
+        <TCCCPresetMessageEditor state={messageState} presetIndex={index} />
+      );
     case MsgType.tcpc:
-      return <TCPCPresetMessageEditor state={messageState} />;
+      return (
+        <TCPCPresetMessageEditor state={messageState} presetIndex={index} />
+      );
   }
 }

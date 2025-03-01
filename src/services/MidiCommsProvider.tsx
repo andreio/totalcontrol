@@ -6,6 +6,7 @@ import {
   makeControllerPresetData,
   makeControllerPresetIdsRequestData,
   makeControllerPresetRequestData,
+  makeFactoryResetRequestData,
   makeRackLoopNamesData,
   makeRackLoopNamesRequestData,
   makeRackPresetData,
@@ -16,32 +17,40 @@ import {
   parseRackLoopNamesData,
   parseRackPresetData,
   parseResponse,
+  pingRequest,
+  waitChain,
 } from "@/lib/utils";
 import React from "react";
 
 export const MidiCommsContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
+  const initialized = React.useRef(false);
   const midi = useMidiContext();
   const state = useStateContext();
   const send = React.useCallback(
     (data: number[]) => {
-      console.log(parseResponse(data));
       midi.output?.send(data);
     },
     [midi.output]
   );
+
   React.useEffect(() => {
     if (!midi.input) {
-      console.error("Midi input is null");
+      console.warn("Midi input is null");
       return;
     }
     midi.input.onmidimessage = (event) => {
       if (!event.data) {
-        console.error("Midi response is null");
+        console.warn("Midi response is null");
         return;
       }
-      const { type, response } = parseResponse(Array.from(event.data));
+      const { type, response, deviceId } = parseResponse(
+        Array.from(event.data)
+      );
+      if (deviceId !== 23) {
+        return;
+      }
       switch (type) {
         case SYSEX_RESPONSES.RECEIVE_CONTROLLER_PRESET_STATE:
           state.setControllerState(parseControllerPresetData(response));
@@ -58,14 +67,25 @@ export const MidiCommsContextProvider = ({
         case SYSEX_RESPONSES.RECEIVE_RACK_PRESET_IDS:
           state.setAllRackPresetIds(parsePresetIdsData(response));
           break;
+        case SYSEX_RESPONSES.PONG:
+          break;
       }
     };
-  }, [midi.input, midi.input?.onmidimessage, state]);
+    return () => {
+      if (!midi.input) {
+        return;
+      }
+      midi.input.onmidimessage = null;
+    };
+  }, [midi, state]);
   const context = React.useMemo<IMidiCommsContext>(
     () => ({
-      requestControllerPreset: () => send(makeControllerPresetRequestData()),
+      requestControllerPreset: (presetIndex: number) =>
+        send(makeControllerPresetRequestData(presetIndex)),
       requestRackLoopNames: () => send(makeRackLoopNamesRequestData()),
-      requestRackPreset: () => send(makeRackPresetRequestData()),
+      requestRackPreset: (presetIndex: number) => {
+        send(makeRackPresetRequestData(presetIndex));
+      },
       requestControllerPresetIds: () =>
         send(makeControllerPresetIdsRequestData()),
       requestRackPresetIds: () => send(makeRackPresetIdsRequestData()),
@@ -74,16 +94,32 @@ export const MidiCommsContextProvider = ({
       sendRackLoopNames: () =>
         send(makeRackLoopNamesData(state.getRackLoopNames())),
       sendRackPreset: () => send(makeRackPresetData(state.getRackState())),
+      ping: () => {
+        send(pingRequest());
+      },
+      requestFactoryReset: () => {
+        send(makeFactoryResetRequestData());
+      },
       init: () => {
-        context.requestControllerPreset();
-        context.requestControllerPresetIds();
-        context.requestRackPreset();
-        context.requestRackPresetIds();
-        context.requestRackLoopNames();
+        if (!midi.input || !midi.output || initialized.current) {
+          return false;
+        }
+        initialized.current = true;
+        waitChain(300)(context.requestControllerPreset.bind(context, 0))(
+          context.requestControllerPresetIds
+        )(context.requestRackPreset.bind(context, 0))(
+          context.requestRackPresetIds
+        );
+        // context.requestRackLoopNames();
+        return true;
       },
     }),
-    [send, state]
+    [send, state, midi]
   );
+  // React.useEffect(() => {
+  //   const intervalHandle = setInterval(context.ping, 1000);
+  //   return () => clearInterval(intervalHandle);
+  // }, [context.ping]);
   return (
     <MidiCommsContext.Provider value={context}>
       {children}

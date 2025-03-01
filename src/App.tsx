@@ -13,18 +13,15 @@ import { EDITOR_PANE } from "./consts";
 import { useMidiContext } from "./hooks/useMidiContext";
 import { Circle } from "lucide-react";
 import { useMidiCommsContext } from "./hooks/useMidiComms";
+import { Button } from "./components/ui/button";
 
 function App() {
   const initialized = React.useRef(false);
   const [pane, selectPane] = React.useState<string>(EDITOR_PANE.CONTROL);
   const midiContext = useMidiContext();
-  const { init } = useMidiCommsContext();
+  const { init, requestFactoryReset } = useMidiCommsContext();
   React.useEffect(() => {
-    if (initialized.current) {
-      return;
-    }
-    init();
-    initialized.current = true;
+    initialized.current = init();
   }, [init]);
   return (
     <>
@@ -45,8 +42,13 @@ function App() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center justify-end gap-3 absolute">
+        <div className="flex items-center justify-end gap-3 absolute left-0 p-3">
           Connection <Circle fill={midiContext.output ? "green" : ""} />
+        </div>
+        <div className="flex items-center justify-end gap-3 absolute right-0 p-3">
+          <Button variant="destructive" onClick={requestFactoryReset}>
+            Reset
+          </Button>
         </div>
       </div>
       <div className="flex flex-col items-center">

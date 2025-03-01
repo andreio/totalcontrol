@@ -22,7 +22,14 @@ export const RackPresetEditor = () => {
         {Array.from({ length: RACK_LOOPS }).map((_, index) => (
           <div className="flex flex-col gap-3 w-60" key={`loop-${index}`}>
             <span>Loop {index + 1}</span>
-            <Select value={currentState.loops[index].toString()}>
+            <Select
+              value={currentState.loops[index].toString()}
+              onValueChange={(val) => {
+                const loops = currentState.loops.slice(0);
+                loops[index] = +val;
+                state.setRackPresetLoops(loops);
+              }}
+            >
               <SelectTrigger className="bg-slate-900">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
@@ -40,7 +47,14 @@ export const RackPresetEditor = () => {
         {Array.from({ length: RACK_CHANNELS }).map((_, index) => (
           <div className="flex flex-col gap-3 w-60" key={`channel-${index}`}>
             <span>Channel {index + 1}</span>
-            <Select value={currentState.loops[index + RACK_LOOPS].toString()}>
+            <Select
+              value={currentState.loops[index + RACK_LOOPS].toString()}
+              onValueChange={(val) => {
+                const loops = currentState.loops.slice(0);
+                loops[index + RACK_LOOPS] = +val;
+                state.setRackPresetLoops(loops);
+              }}
+            >
               <SelectTrigger className="bg-slate-900">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>

@@ -4,7 +4,6 @@ export enum MsgType {
   "cc",
   "tccc",
   "tcpc",
-  tap,
 }
 export enum MsgAction {
   "none",
@@ -19,6 +18,7 @@ export enum LoopToggle {
   "unchanged",
   "set",
   "unset",
+  "toggle",
 }
 
 export enum LoopState {
@@ -61,28 +61,29 @@ export interface IMidiContext {
 }
 
 export interface IMidiCommsContext {
-  requestControllerPreset(): void;
+  requestControllerPreset(presetIndex: number): void;
   sendControllerPreset(): void;
-  requestRackPreset(): void;
+  requestRackPreset(presetIndex: number): void;
   sendRackPreset(): void;
   requestRackLoopNames(): void;
   sendRackLoopNames(): void;
   requestControllerPresetIds(): void;
   requestRackPresetIds(): void;
-  init(): void;
+  ping(): void;
+  init(): boolean;
+  requestFactoryReset(): void;
 }
 
 export type PresetId = {
+  index: number;
   presetName: string;
-  preset: number;
   bankName: string;
-  bank: number;
 };
 
 export interface IStateContext {
   setControllerState(state: IControllerState): void;
   getControllerState(): IControllerState;
-  setControllerCurrent(bank: number, program: number): void;
+  setControllerCurrent(index: number): void;
   setControllerPresetName(name: string): void;
   setControllerTogglePresetName(name: string): void;
   setControllerBankName(name: string): void;
@@ -92,7 +93,7 @@ export interface IStateContext {
   ): void;
   setRackState(state: IRackState): void;
   getRackState(): IRackState;
-  setRackCurrent(bank: number, program: number): void;
+  setRackCurrent(index: number): void;
   setRackPresetName(name: string): void;
   setRackBankName(name: string): void;
   setRackPresetLoops(loops: LoopToggle[]): void;
@@ -104,8 +105,7 @@ export interface IStateContext {
   setAllRackPresetIds(presetIds: PresetId[]): void;
 }
 export interface IControllerState {
-  bank: number;
-  program: number;
+  index: number;
   messages: IControllerMessageState[];
   name: string;
   toggleName: string;
@@ -113,7 +113,6 @@ export interface IControllerState {
 }
 
 export type IControllerMessageState = {
-  index: number;
   action: MsgAction;
   type: MsgType;
   ccNumber: number;
@@ -123,18 +122,11 @@ export type IControllerMessageState = {
   midiChannel: number;
   loops: LoopToggle[];
   rackPreset: number;
-  rackBank: number;
 };
 
 export interface IRackState {
-  bank: number;
-  bankName: string;
-  program: number;
-  name: string;
-  loops: LoopToggle[];
-}
-export interface IRackStateLoop {
   index: number;
+  bankName: string;
   name: string;
   loops: LoopToggle[];
 }
@@ -152,6 +144,7 @@ export enum SYSEX_REQUESTS {
   REQUEST_CONTROLLER_PRESET_IDS,
   REQUEST_RACK_PRESET_IDS,
   PING,
+  RESET,
 }
 export enum SYSEX_RESPONSES {
   RECEIVE_CONTROLLER_PRESET_STATE,
@@ -172,33 +165,24 @@ export const EMPTY_MESSAGE_STATE = {
   omni: false,
   rackPreset: 0,
   rackBank: 0,
-  index: 0,
   loops: Array.from({ length: 9 }).map(() => LoopToggle.unchanged),
 };
 
 export const EMPTY_CONTROLLER_STATE: IControllerState = {
-  bank: 0,
   messages: Array.from({ length: 8 }).map((_, index) => ({
     ...EMPTY_MESSAGE_STATE,
     index,
   })),
   name: "",
-  program: 0,
+  index: 0,
   toggleName: "",
   bankName: "",
 };
 
-export const EMPTY_PRESET_STATE: IRackStateLoop = {
-  index: 0,
-  name: "",
-  loops: Array.from({ length: 9 }).map(() => LoopToggle.unchanged),
-};
-
 export const EMPTY_RACK_STATE: IRackState = {
-  program: 0,
+  index: 0,
   loops: Array.from({ length: 9 }).map(() => LoopToggle.unset),
   name: "",
-  bank: 0,
   bankName: "",
 };
 
@@ -216,6 +200,7 @@ export const DEFAULT_LOOP_NAMES = [
 
 export const RACK_LOOPS = 7;
 export const RACK_CHANNELS = 2;
+export const PRESETS_TO_BANK = 8;
 
 export const EMPTY_PRESET_IDS: PresetId[] = Array.from({
   length: 16,
@@ -224,9 +209,8 @@ export const EMPTY_PRESET_IDS: PresetId[] = Array.from({
     Array.from({ length: 8 }).map(
       (_, presetIndex) =>
         ({
-          bank: bankIndex,
+          index: bankIndex * PRESETS_TO_BANK + presetIndex,
           bankName: `Bank ${bankIndex}`,
-          preset: presetIndex,
           presetName: `Preset ${presetIndex}`,
         } as PresetId)
     )

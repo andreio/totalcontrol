@@ -1,11 +1,13 @@
 import { NumberSelect } from "@/components/ui/numberSelect";
-import { IControllerMessageState, MsgType } from "@/consts";
+import { IControllerMessageState } from "@/consts";
 import { useStateContext } from "@/hooks/useStateContext";
 
 export const TapPresetMessageEditor = ({
   state,
+  presetIndex,
 }: {
   state: IControllerMessageState;
+  presetIndex: number;
 }) => {
   const { setControllerMessage: setMessage } = useStateContext();
 
@@ -17,10 +19,9 @@ export const TapPresetMessageEditor = ({
           min={0}
           max={127}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               ccNumber: +val,
-              type: MsgType.tap,
             })
           }
           value={state.ccNumber.toString()}
@@ -32,10 +33,9 @@ export const TapPresetMessageEditor = ({
           min={0}
           max={15}
           onValueChange={(val) =>
-            setMessage(state.index, {
+            setMessage(presetIndex, {
               ...state,
               midiChannel: +val,
-              type: MsgType.tap,
             })
           }
           value={state.midiChannel.toString()}
