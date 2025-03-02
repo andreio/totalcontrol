@@ -91,8 +91,8 @@ export const makeRackPresetData = ({
   sysex([
     SYSEX_REQUESTS.SEND_RACK_PRESET_STATE,
     index,
-    ...strToCodes(name),
     ...strToCodes(bankName),
+    ...strToCodes(name),
     ...loops,
   ]);
 

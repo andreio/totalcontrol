@@ -109,8 +109,7 @@ export const MidiCommsContextProvider = ({
           context.requestControllerPresetIds
         )(context.requestRackPreset.bind(context, 0))(
           context.requestRackPresetIds
-        );
-        // context.requestRackLoopNames();
+        )(context.requestRackLoopNames);
         return true;
       },
     }),

@@ -21,13 +21,13 @@ export const TCCCPresetMessageEditor = ({
   state: IControllerMessageState;
   presetIndex: number;
 }) => {
-  const { setControllerMessage } = useStateContext();
+  const { setControllerMessage, getRackLoopNames } = useStateContext();
 
   return (
     <div className="grid grid-cols-5 gap-3">
       {Array.from({ length: RACK_LOOPS }).map((_, index) => (
         <div className="flex flex-col gap-3 w-60" key={`loop-${index}`}>
-          <span>Loop {index + 1}</span>
+          <span>{getRackLoopNames()[index]}</span>
           <Select
             value={state.loops[index].toString()}
             onValueChange={(toggle) => {
@@ -58,7 +58,7 @@ export const TCCCPresetMessageEditor = ({
       ))}
       {Array.from({ length: RACK_CHANNELS }).map((_, index) => (
         <div className="flex flex-col gap-3 w-60" key={`channel-${index}`}>
-          <span>Channel {index + 1}</span>
+          <span>Channel: {getRackLoopNames()[RACK_LOOPS + index]}</span>
           <Select
             value={state.loops[RACK_LOOPS + index].toString()}
             onValueChange={(toggle) => {
