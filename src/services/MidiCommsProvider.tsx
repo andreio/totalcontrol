@@ -105,7 +105,7 @@ export const MidiCommsContextProvider = ({
           return false;
         }
         initialized.current = true;
-        waitChain(300)(context.requestControllerPreset.bind(context, 0))(
+        waitChain(500)(context.requestControllerPreset.bind(context, 0))(
           context.requestControllerPresetIds
         )(context.requestRackPreset.bind(context, 0))(
           context.requestRackPresetIds

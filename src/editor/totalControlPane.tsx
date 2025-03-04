@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MonitorUpIcon } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp, MonitorUpIcon } from "lucide-react";
 import { PresetPage } from "./controllerEditor/presetPage";
 import { useMidiCommsContext } from "@/hooks/useMidiComms";
 import { useStateContext } from "@/hooks/useStateContext";
@@ -26,9 +26,37 @@ export const TotalControlPane = () => {
       }}
     >
       <div className="grid grid-cols-3 w-full">
-        <div className="flex justify-start items-center gap-4">
-          <span>Presets:</span>
-          <PresetSelector pane={EDITOR_PANE.CONTROL} />
+        <div className="flex flex-col gap-4">
+          <Button
+            className="w-full"
+            size="sm"
+            variant="ghost"
+            onClick={() =>
+              requestControllerPreset(
+                Math.min(state.getControllerState().index + 9, 127)
+              )
+            }
+          >
+            Bank up
+            <ArrowBigUp />
+          </Button>
+          <div className="flex justify-start items-center gap-4">
+            <span>Presets:</span>
+            <PresetSelector pane={EDITOR_PANE.CONTROL} />
+          </div>
+          <Button
+            className="w-full"
+            size="sm"
+            variant="ghost"
+            onClick={() =>
+              requestControllerPreset(
+                Math.max(state.getControllerState().index - 9, 0)
+              )
+            }
+          >
+            Bank down
+            <ArrowBigDown />
+          </Button>
         </div>
         <div className="flex flex-row justify-center">
           <TabsList className="grid w-fit grid-cols-4 grid-rows-2 h-30 items-center">

@@ -21,7 +21,7 @@ export const RackPresetEditor = () => {
       <div className="grid grid-cols-5 gap-3 justify-center">
         {Array.from({ length: RACK_LOOPS }).map((_, index) => (
           <div className="flex flex-col gap-3 w-60" key={`loop-${index}`}>
-            <span>Loop {index + 1}</span>
+            <span>{state.getRackLoopNames()[index]}</span>
             <Select
               value={currentState.loops[index].toString()}
               onValueChange={(val) => {
@@ -46,7 +46,7 @@ export const RackPresetEditor = () => {
         ))}
         {Array.from({ length: RACK_CHANNELS }).map((_, index) => (
           <div className="flex flex-col gap-3 w-60" key={`channel-${index}`}>
-            <span>Channel {index + 1}</span>
+            <span>{state.getRackLoopNames()[RACK_LOOPS + index]}</span>
             <Select
               value={currentState.loops[index + RACK_LOOPS].toString()}
               onValueChange={(val) => {
